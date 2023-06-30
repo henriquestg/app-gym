@@ -9,7 +9,12 @@ import { Button } from '@components/Button';
 export function SignUp() {
   return (
 
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} bg='gray.700'>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+      bg='gray.700'
+    >
+
       <VStack flex={1} bg='gray.700' px={10} pb={16}>
         <Image
           source={BackgroundImg}
