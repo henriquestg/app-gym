@@ -22,7 +22,7 @@ export function HomeHeader() {
         </Text>
 
         <Heading color='gray.200'>
-          Henrique
+          Henrique Rigoni
         </Heading>
       </VStack>
 
