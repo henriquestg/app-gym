@@ -6,9 +6,9 @@ import { useState } from 'react'
 
 
 export function Home() {
-  const [groups, setGroups] = useState(['costa', 'bíceps', 'tríceps', 'ombro'])
+  const [groups, setGroups] = useState(['Costas', 'bíceps', 'tríceps', 'ombro'])
   const [exercises, setexercises] = useState(['Puxada frontal ', 'Remada curvada', 'Remada unilateral', 'Levantamento terra'])
-  const [groupSelected, setGroupSelected] = useState('costa')
+  const [groupSelected, setGroupSelected] = useState('Costas')
 
   return (
     <VStack flex={1}>
@@ -20,7 +20,7 @@ export function Home() {
         renderItem={({ item }) => (
           <Group
             name={item}
-            isActive={groupSelected === item}
+            isActive={groupSelected.toLocaleUpperCase() === item.toLocaleUpperCase()}
             onPress={() => setGroupSelected(item)}
           />
         )}
