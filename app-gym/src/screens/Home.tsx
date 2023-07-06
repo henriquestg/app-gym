@@ -40,6 +40,7 @@ export function Home() {
           <Text color="gray.200" fontSize="sm">
             {exercises.length}
           </Text>
+
         </HStack>
 
         <FlatList
@@ -51,6 +52,7 @@ export function Home() {
           showsVerticalScrollIndicator={false}
           _contentContainerStyle={{ paddingBottom: 20 }}
         />
+
       </VStack>
     </VStack>
   )
