@@ -46,7 +46,7 @@ export function Profile() {
           />
 
           <Input
-            bg='gray.600'
+            bg='gray.500'
             placeholder='E-mail'
             isDisabled
           />
