@@ -6,7 +6,7 @@ import { useState } from "react";
 export function History() {
   const [exercises, setExercises] = useState([
     {
-      title: "26.08.23",
+      title: "26.08.22",
       data: ["Puxada frontal", "Remada Unilateral"],
     },
     {
