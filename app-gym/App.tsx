@@ -9,6 +9,7 @@ import {
 import { THEME } from "./src/theme";
 import { Loading } from "@components/Loading";
 import { Routes } from "./src/routes";
+import { AuthContextsProvider } from "@contexts/AuthContexts";
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
@@ -24,7 +25,9 @@ export default function App() {
           backgroundColor="transparent"
           translucent
         />
-        {fontsLoaded ? <Routes /> : <Loading />}
+        <AuthContextsProvider>
+          {fontsLoaded ? <Routes /> : <Loading />}
+        </AuthContextsProvider>
       </KeyboardAvoidingView>
     </NativeBaseProvider>
   );
