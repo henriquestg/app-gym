@@ -17,13 +17,13 @@ export function Home() {
   const [isLoading, setIsloading] = useState(true);
   const [groups, setGroups] = useState<string[]>([]);
   const [exercises, setExercises] = useState<ExerciseDTO[]>([]);
-  const [groupSelected, setGroupSelected] = useState("Costas");
+  const [groupSelected, setGroupSelected] = useState("antebraço");
   const toast = useToast();
 
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
-  function handleOpenExerciseDetails() {
-    navigation.navigate("Exercise");
+  function handleOpenExerciseDetails(exerciseId: string) {
+    navigation.navigate("exercise", { exerciseId });
   }
 
   async function fetchGroups() {
@@ -115,7 +115,10 @@ export function Home() {
             data={exercises}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <ExerciseCard onPress={handleOpenExerciseDetails} data={item} />
+              <ExerciseCard
+                onPress={() => handleOpenExerciseDetails(item.id)}
+                data={item}
+              />
             )}
             showsVerticalScrollIndicator={false}
             _contentContainerStyle={{ paddingBottom: 20 }}
