@@ -25,6 +25,8 @@ import {
   useToast,
 } from "native-base";
 import { useAuth } from "@hooks/useAuth";
+import { api } from "@services/api";
+import { AppError } from "@utils/AppError";
 
 const PHOTO_SIZE = 33;
 
@@ -38,16 +40,37 @@ type FormDataProps = {
 
 const profileSchema = yup.object({
   name: yup.string().required("Informe o nome"),
+
+  password: yup
+    .string()
+    .min(6, "A senha deve ter pelo menos 6 dígitos.")
+    .nullable()
+    .transform((value) => (!!value ? value : null)),
+
+  confirm_password: yup
+    .string()
+    .nullable()
+    .transform((value) => (!!value ? value : null))
+    .oneOf([yup.ref("password"), null], "A confirmação de senha não confere.")
+    .when("password", {
+      is: (Field: any) => Field,
+      then: (schema) =>
+        schema
+          .nullable()
+          .required("Informe a confirmação da senha.")
+          .transform((value) => (!!value ? value : null)),
+    }),
 });
 
 export function Profile() {
+  const [isUpdate, setIsUpdate] = useState(false);
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
   const [userphoto, setUserphoto] = useState(
     "https://github.com/henriquestg.png"
   );
 
   const toast = useToast();
-  const { user } = useAuth();
+  const { user, updateUserProfile } = useAuth();
   const {
     control,
     handleSubmit,
@@ -98,7 +121,34 @@ export function Profile() {
   }
 
   async function handleProfileUpdate(data: FormDataProps) {
-    console.log(data);
+    try {
+      setIsUpdate(true);
+
+      const userUpdated = user;
+      userUpdated.name = data.name;
+
+      await api.put("/users", data);
+
+      await updateUserProfile(userUpdated);
+      toast.show({
+        title: "Perfil atualizado com sucesso",
+        placement: "top",
+        bgColor: "green.500",
+      });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível atualizar o perfil. Tente novamente mais tarde!";
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsUpdate(false);
+    }
   }
 
   return (
@@ -179,6 +229,7 @@ export function Profile() {
               <Input
                 bg="gray.600"
                 placeholder="Senha antiga"
+                errorMessage={errors.old_password?.message}
                 secureTextEntry
                 onChangeText={onChange}
               />
@@ -206,9 +257,9 @@ export function Profile() {
               <Input
                 bg="gray.600"
                 placeholder="Comfirme a nova senha"
+                errorMessage={errors.confirm_password?.message}
                 secureTextEntry
                 onChangeText={onChange}
-                errorMessage={errors.old_password?.message}
               />
             )}
           />
@@ -217,6 +268,7 @@ export function Profile() {
             title="Atualizar"
             mt={4}
             onPress={handleSubmit(handleProfileUpdate)}
+            isLoading={isUpdate}
           />
         </Center>
       </ScrollView>
