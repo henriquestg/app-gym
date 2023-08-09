@@ -7,6 +7,8 @@ import { Input } from "@components/Input";
 import { ScreenHeader } from "@components/ScreenHeader";
 import { UserPhoto } from "@components/UserPhoto";
 
+import userPhotoDefaultImg from "@assets/userPhotoDefault.png";
+
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { FileInfo } from "expo-file-system";
@@ -122,11 +124,20 @@ export function Profile() {
         const userPhotoUploadForm = new FormData();
         userPhotoUploadForm.append("avatar", photoFile);
 
-        await api.patch("/users/avatar", userPhotoUploadForm, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const avatarUpdatedResponse = await api.patch(
+          "/users/avatar",
+          userPhotoUploadForm,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const userUpdated = user;
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar;
+        await updateUserProfile(userUpdated);
+
         toast.show({
           title: "Foto atualizada",
           placement: "top",
@@ -187,7 +198,11 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: userphoto }}
+              source={
+                user.avatar
+                  ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                  : userPhotoDefaultImg
+              }
               alt="Foto do usuario"
               size={PHOTO_SIZE}
             />
